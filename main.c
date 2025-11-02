@@ -26,6 +26,12 @@ Font LoadFontWithCodepointsFromText(const char *path, int fontSize, const char *
     return GetFontDefault();
 }
 
+typedef enum Obtiznost {
+    Easy,
+    Normal,
+    Hard
+} Obtiznost;
+
 int main() {
     const int screenWidth = 800;
     const int screenHeight = 600;
@@ -42,19 +48,30 @@ int main() {
     Rectangle hardTlacitko = { screenWidth/1.32f - VELIKOST_R/2, screenHeight/2.0f - VELIKOST_R/4, (float)VELIKOST_R, VELIKOST_R/2 };
 
     Vector2 mousePos;
-    bool easyTlacitkoStisknuto = false;
+    bool hra = false;
+    Obtiznost obtiznost;
+    
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
         UpdateMusicStream(music);
         mousePos = GetMousePosition();
-        if (CheckCollisionPointRec(mousePos, easyTlacitko))
-        {
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) easyTlacitkoStisknuto = true;
+        if (CheckCollisionPointRec(mousePos, easyTlacitko) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            obtiznost = Easy;
+            hra = true;
+        }
+        if (CheckCollisionPointRec(mousePos, normalTlacitko) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            obtiznost = Normal;
+            hra = true;
+        }
+        if (CheckCollisionPointRec(mousePos, hardTlacitko) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            obtiznost = Hard;
+            hra = true;
         }
 
         BeginDrawing();
             ClearBackground(GRAY);
-            if (easyTlacitkoStisknuto) {
+            if (hra) {
+                DrawTextEx(font, u8"Hlavní obrazovka", (Vector2) { screenWidth/2-VELIKOST_T_OBTIZNOST*1.2, screenHeight/2-VELIKOST_T_OBTIZNOST }, VELIKOST_T_OBTIZNOST/6, 0, WHITE);
                 EndDrawing();
                 continue;
             }
