@@ -33,9 +33,14 @@ typedef enum Obtiznost {
 } Obtiznost;
 
 bool veHre(Obtiznost obtiznost, Font font, int screenWidth, int screenHeight) {
-    Rectangle zpetTlacitko = { screenWidth/12.0f - VELIKOST_R/2, screenHeight-50 - VELIKOST_R/4, (float)VELIKOST_R, VELIKOST_R/2 };
+    Rectangle zpetTlacitko = { screenWidth/11.0f - VELIKOST_R/2, screenHeight-45 - VELIKOST_R/4, (float)VELIKOST_R/1.25, VELIKOST_R/2.75 };
     DrawTextEx(font, u8"Hlavní obrazovka", (Vector2) { screenWidth/3-VELIKOST_T_OBTIZNOST, screenHeight/2.5f-VELIKOST_T_OBTIZNOST }, VELIKOST_T_OBTIZNOST/6, 0, WHITE);
     DrawRectangleRec(zpetTlacitko, RED);
+    DrawTextEx(font, "Zpět", (Vector2) { screenWidth/3-VELIKOST_T_OBTIZNOST*1.15, screenHeight-65 }, VELIKOST_T_OBTIZNOST/7, 0, WHITE);
+    Vector2 mousePos = GetMousePosition();
+    if (CheckCollisionPointRec(mousePos, zpetTlacitko) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        return false;
+    }
     return true;
 }
 
