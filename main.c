@@ -3,7 +3,9 @@
 #include <string.h>
 #include "raylib.h"
 #define VELIKOST_T_OBTIZNOST 200
+#define VELIKOST_T_HLAVNI_OBRAZOVKY 250
 #define VELIKOST_R 100
+#define DELKA_HLAVNIHO_TEXTU 4096
 
 char *nullTerminate(const char *inp) {
     size_t len = strnlen(inp, 255);
@@ -32,9 +34,45 @@ typedef enum Obtiznost {
     Hard
 } Obtiznost;
 
-bool veHre(Obtiznost obtiznost, Font font, int screenWidth, int screenHeight) {
+typedef struct Hrac {
+    unsigned short int kola;
+    int penize;
+    int vojaci;
+    int obsadit;
+    int banka;
+    int penize_za_kolo;
+} Hrac;
+
+void hraInit(Hrac *hrac, Obtiznost obtiznost) {
+    hrac->kola = 1;
+    hrac->banka = 0;
+    hrac->penize_za_kolo = 2;
+    switch (obtiznost) {
+        case Easy:
+            hrac->penize = 3;
+            hrac->vojaci = 2000;
+            hrac->obsadit = 30;
+            break;
+        case Normal:
+            hrac->penize = 3;
+            hrac->vojaci = 0;
+            hrac->obsadit = 57;
+            break;
+        case Hard:
+            hrac->penize = 0;
+            hrac->vojaci = 0;
+            hrac->obsadit = 70;
+            break;
+    }
+}
+
+bool veHre(Hrac *hrac, Obtiznost obtiznost, Font font, int screenWidth, int screenHeight) {
     Rectangle zpetTlacitko = { screenWidth/11.0f - VELIKOST_R/2, screenHeight-45 - VELIKOST_R/4, (float)VELIKOST_R/1.25, VELIKOST_R/2.75 };
-    DrawTextEx(font, u8"Hlavní obrazovka", (Vector2) { screenWidth/3-VELIKOST_T_OBTIZNOST, screenHeight/2.5f-VELIKOST_T_OBTIZNOST }, VELIKOST_T_OBTIZNOST/6, 0, WHITE);
+    DrawTextEx(font, u8"Hlavní obrazovka", (Vector2) { screenWidth/2.75f-VELIKOST_T_HLAVNI_OBRAZOVKY, screenHeight/2.2f-VELIKOST_T_HLAVNI_OBRAZOVKY }, VELIKOST_T_HLAVNI_OBRAZOVKY/6, 0, WHITE);
+    char hlavniText[DELKA_HLAVNIHO_TEXTU];
+    sprintf(hlavniText, "%d. KOLO!\nPeněz: %d\nVojáků: %d\nÚzemí: %d\nDluh: %d\nPeněz za kolo: %d", hrac->kola, hrac->penize, hrac->vojaci, hrac->obsadit, hrac->banka, hrac->penize_za_kolo);
+
+    DrawTextEx(font, hlavniText, (Vector2) { screenWidth/3-VELIKOST_T_OBTIZNOST, screenHeight/2-VELIKOST_T_OBTIZNOST }, VELIKOST_T_OBTIZNOST/6, 0, WHITE);
     DrawRectangleRec(zpetTlacitko, RED);
     DrawTextEx(font, "Zpět", (Vector2) { screenWidth/3-VELIKOST_T_OBTIZNOST*1.15, screenHeight-65 }, VELIKOST_T_OBTIZNOST/7, 0, WHITE);
     Vector2 mousePos = GetMousePosition();
@@ -61,6 +99,7 @@ int main() {
 
     Vector2 mousePos;
     bool hra = false;
+    Hrac hrac;
     Obtiznost obtiznost;
 
     SetTargetFPS(60);
@@ -69,21 +108,24 @@ int main() {
         mousePos = GetMousePosition();
         if (CheckCollisionPointRec(mousePos, easyTlacitko) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             obtiznost = Easy;
+            hraInit(&hrac, obtiznost);
             hra = true;
         }
         if (CheckCollisionPointRec(mousePos, normalTlacitko) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             obtiznost = Normal;
+            hraInit(&hrac, obtiznost);
             hra = true;
         }
         if (CheckCollisionPointRec(mousePos, hardTlacitko) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             obtiznost = Hard;
+            hraInit(&hrac, obtiznost);
             hra = true;
         }
 
         BeginDrawing();
             ClearBackground(GRAY);
             if (hra) {
-                hra = veHre(obtiznost, font, screenWidth, screenHeight);
+                hra = veHre(&hrac, obtiznost, font, screenWidth, screenHeight);
                 EndDrawing();
                 continue;
             }
