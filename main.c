@@ -32,6 +32,13 @@ typedef enum Obtiznost {
     Hard
 } Obtiznost;
 
+bool veHre(Obtiznost obtiznost, Font font, int screenWidth, int screenHeight) {
+    Rectangle zpetTlacitko = { screenWidth/12.0f - VELIKOST_R/2, screenHeight-50 - VELIKOST_R/4, (float)VELIKOST_R, VELIKOST_R/2 };
+    DrawTextEx(font, u8"Hlavní obrazovka", (Vector2) { screenWidth/3-VELIKOST_T_OBTIZNOST, screenHeight/2.5f-VELIKOST_T_OBTIZNOST }, VELIKOST_T_OBTIZNOST/6, 0, WHITE);
+    DrawRectangleRec(zpetTlacitko, RED);
+    return true;
+}
+
 int main() {
     const int screenWidth = 800;
     const int screenHeight = 600;
@@ -44,13 +51,13 @@ int main() {
     PlayMusicStream(music);
 
     Rectangle easyTlacitko = { screenWidth/4.0f - VELIKOST_R/2, screenHeight/2.0f - VELIKOST_R/4, (float)VELIKOST_R, VELIKOST_R/2 };
-    Rectangle normalTlacitko = { screenWidth/2.0f - VELIKOST_R/2, screenHeight/2.0f - VELIKOST_R/4, (float)VELIKOST_R, VELIKOST_R/2 };
+    Rectangle normalTlacitko = { screenWidth/2.0f - VELIKOST_R/2, screenHeight/2.0f - VELIKOST_R/4, (float)VELIKOST_R+20, VELIKOST_R/2 };
     Rectangle hardTlacitko = { screenWidth/1.32f - VELIKOST_R/2, screenHeight/2.0f - VELIKOST_R/4, (float)VELIKOST_R, VELIKOST_R/2 };
 
     Vector2 mousePos;
     bool hra = false;
     Obtiznost obtiznost;
-    
+
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
         UpdateMusicStream(music);
@@ -71,14 +78,17 @@ int main() {
         BeginDrawing();
             ClearBackground(GRAY);
             if (hra) {
-                DrawTextEx(font, u8"Hlavní obrazovka", (Vector2) { screenWidth/2-VELIKOST_T_OBTIZNOST*1.2, screenHeight/2-VELIKOST_T_OBTIZNOST }, VELIKOST_T_OBTIZNOST/6, 0, WHITE);
+                hra = veHre(obtiznost, font, screenWidth, screenHeight);
                 EndDrawing();
                 continue;
             }
             DrawTextEx(font, u8"Na jakou chceš hrát obtížnost?", (Vector2) { screenWidth/2-VELIKOST_T_OBTIZNOST*1.2, screenHeight/2-VELIKOST_T_OBTIZNOST }, VELIKOST_T_OBTIZNOST/6, 0, WHITE);
             DrawRectangleRec(easyTlacitko, GREEN);
+            DrawTextEx(font, "Easy", (Vector2) { screenWidth/4-VELIKOST_T_OBTIZNOST*.2, screenHeight/2-VELIKOST_T_OBTIZNOST/11 }, VELIKOST_T_OBTIZNOST/6, 0, WHITE);
             DrawRectangleRec(normalTlacitko, YELLOW);
+            DrawTextEx(font, "Normal", (Vector2) { screenWidth/2-VELIKOST_T_OBTIZNOST*.2, screenHeight/2-VELIKOST_T_OBTIZNOST/11 }, VELIKOST_T_OBTIZNOST/6, 0, WHITE);
             DrawRectangleRec(hardTlacitko, RED);
+            DrawTextEx(font, "Hard", (Vector2) { screenWidth/1.32-VELIKOST_T_OBTIZNOST*.2, screenHeight/2-VELIKOST_T_OBTIZNOST/11 }, VELIKOST_T_OBTIZNOST/6, 0, WHITE);
         EndDrawing();
     }
 
