@@ -129,6 +129,8 @@ int main() {
                 EndDrawing();
                 continue;
             }
+
+            DrawTextEx(font, "KV War Simulator GUI", (Vector2) { screenWidth/2.3f-VELIKOST_T_HLAVNI_OBRAZOVKY, screenHeight/2.2f-VELIKOST_T_HLAVNI_OBRAZOVKY }, VELIKOST_T_HLAVNI_OBRAZOVKY/4, 0, WHITE);
             DrawTextEx(font, u8"Na jakou chceš hrát obtížnost?", (Vector2) { screenWidth/2-VELIKOST_T_OBTIZNOST*1.2, screenHeight/2-VELIKOST_T_OBTIZNOST }, VELIKOST_T_OBTIZNOST/6, 0, WHITE);
             DrawRectangleRec(easyTlacitko, GREEN);
             DrawTextEx(font, "Easy", (Vector2) { screenWidth/4-VELIKOST_T_OBTIZNOST*.2, screenHeight/2-VELIKOST_T_OBTIZNOST/11 }, VELIKOST_T_OBTIZNOST/6, 0, WHITE);
